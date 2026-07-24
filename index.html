@@ -501,19 +501,19 @@
       var tdLabel = document.createElement('td');
       var inLabel = document.createElement('input');
       inLabel.type = 'text'; inLabel.value = row.label;
-      inLabel.addEventListener('input', function () { rows[idx].label = inLabel.value; });
+      inLabel.addEventListener('input', function () { rows[idx].label = inLabel.value; analyze(); });
       tdLabel.appendChild(inLabel);
 
       var tdX = document.createElement('td');
       var inX = document.createElement('input');
       inX.type = 'text'; inX.value = row.x;
-      inX.addEventListener('input', function () { rows[idx].x = inX.value; });
+      inX.addEventListener('input', function () { rows[idx].x = inX.value; analyze(); });
       tdX.appendChild(inX);
 
       var tdY = document.createElement('td');
       var inY = document.createElement('input');
       inY.type = 'text'; inY.value = row.y;
-      inY.addEventListener('input', function () { rows[idx].y = inY.value; });
+      inY.addEventListener('input', function () { rows[idx].y = inY.value; analyze(); });
       tdY.appendChild(inY);
 
       var tdDel = document.createElement('td');
@@ -524,6 +524,7 @@
       btnDel.addEventListener('click', function () {
         rows.splice(idx, 1);
         renderTable();
+        analyze();
       });
       tdDel.appendChild(btnDel);
 
@@ -535,14 +536,23 @@
   document.getElementById('addRowBtn').addEventListener('click', function () {
     rows.push({ label: '', x: '', y: '' });
     renderTable();
+    analyze();
   });
 
   document.getElementById('clearRowsBtn').addEventListener('click', function () {
     rows = [];
     renderTable();
+    analyze();
   });
 
   document.getElementById('analyzeBtn').addEventListener('click', analyze);
+
+  ['topicInput', 'xLabelInput', 'yLabelInput', 'wisdomInput'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', analyze);
+  });
+  document.querySelectorAll('input[name="expected"]').forEach(function (radio) {
+    radio.addEventListener('change', analyze);
+  });
 
   function computeStats(xs, ys) {
     var n = xs.length;
