@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>여론과 통념: 지역·세대 회귀 분석 탐구</title>
+<title>여론과 통념: 상관관계·회귀분석 도구</title>
 <style>
   :root {
     --bg: #f7f8fb;
@@ -74,7 +74,7 @@
   }
 
   .hero h1 {
-    font-size: 2.2rem;
+    font-size: 2.1rem;
     font-weight: 800;
     letter-spacing: -0.03em;
     margin: 0 0 20px;
@@ -123,32 +123,12 @@
     background: #fffbeb;
     border: 1px solid #fde68a;
     border-radius: var(--radius);
-    padding: 20px 24px;
-    font-size: 0.9rem;
+    padding: 18px 22px;
+    font-size: 0.88rem;
     color: #78350f;
   }
 
-  .notice h3 { margin: 0 0 8px; font-size: 0.95rem; }
-  .notice ul { margin: 8px 0 0; padding-left: 20px; }
-  .notice li { margin-bottom: 4px; }
-  .notice a { color: #92400e; text-decoration: underline; }
-
-  .issue-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px 28px;
-  }
-
-  .issue-card .issue-title { font-size: 1.15rem; font-weight: 800; margin: 0 0 6px; }
-  .issue-card .issue-meta { color: var(--muted); font-size: 0.86rem; margin: 0 0 16px; }
-
-  .overall-row { display: flex; gap: 24px; flex-wrap: wrap; }
-  .overall-stat { flex: 1; min-width: 140px; }
-  .overall-stat .num { font-size: 1.6rem; font-weight: 800; }
-  .overall-stat .lbl { font-size: 0.82rem; color: var(--muted); }
-  .num.pos { color: var(--good); }
-  .num.neg { color: var(--bad); }
+  .notice b { display: block; margin-bottom: 4px; }
 
   .panel {
     background: var(--surface);
@@ -157,42 +137,85 @@
     padding: 28px;
   }
 
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-bottom: 22px;
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 20px;
   }
 
-  .controls .ctrl-label { font-size: 0.88rem; font-weight: 700; color: var(--muted); }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 0.82rem; font-weight: 700; color: var(--muted); }
 
-  .toggle-group {
-    display: inline-flex;
-    background: var(--bg);
+  input[type="text"], textarea, select {
+    font-family: inherit;
+    font-size: 0.92rem;
+    padding: 10px 12px;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 3px;
-  }
-
-  .toggle-btn {
-    border: none;
-    background: transparent;
-    padding: 8px 16px;
     border-radius: 8px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    background: var(--bg);
+    color: var(--text);
   }
 
-  .toggle-btn.active { background: var(--primary); color: #fff; }
+  textarea { resize: vertical; min-height: 60px; }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--surface);
+  }
+
+  .radio-row { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.9rem; }
+  .radio-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 700; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  td input[type="text"] { width: 100%; padding: 7px 9px; font-size: 0.88rem; }
+  td.del-cell { width: 40px; text-align: center; }
+
+  .btn {
+    padding: 11px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s;
+  }
+
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); }
+
+  .btn-ghost { background: var(--bg); color: var(--text); border-color: var(--border); }
+  .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+  .btn-del {
+    background: none;
+    border: none;
+    color: var(--bad);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 4px 8px;
+  }
+
+  .table-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  .summary-banner {
+    background: #eef2ff;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+
+  .summary-banner .sb-topic { font-weight: 800; font-size: 1.1rem; margin: 0 0 4px; }
+  .summary-banner .sb-vars { font-size: 0.86rem; color: var(--primary); }
 
   .chart-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; }
-
   .chart-wrap canvas { width: 100%; height: auto; display: block; }
-
   .stats-col { display: flex; flex-direction: column; gap: 12px; }
 
   .stat-box {
@@ -205,11 +228,6 @@
   .stat-box .stat-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 2px; }
   .stat-box .stat-value { font-size: 1.3rem; font-weight: 800; }
   .stat-box .stat-sub { font-size: 0.78rem; color: var(--muted); }
-
-  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 16px; }
-  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
-  th { color: var(--muted); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
-  td.num-cell { font-variant-numeric: tabular-nums; }
 
   .interpret-box {
     background: var(--surface);
@@ -260,10 +278,6 @@
   .caveat-item p { margin: 0; font-size: 0.92rem; }
   .caveat-item b { display: block; margin-bottom: 2px; }
 
-  .source-list { display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; }
-  .source-list .src-group b { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
-  .source-list a { display: block; word-break: break-all; }
-
   footer {
     border-top: 1px solid var(--border);
     padding: 32px 24px;
@@ -273,10 +287,10 @@
   }
 
   @media (max-width: 760px) {
-    .hero h1 { font-size: 1.7rem; }
+    .hero h1 { font-size: 1.6rem; }
     .chart-layout { grid-template-columns: 1fr; }
+    .field-grid { grid-template-columns: 1fr; }
     .nav-links { display: none; }
-    .overall-row { gap: 16px; }
   }
 </style>
 </head>
@@ -284,71 +298,96 @@
 
 <header class="nav">
   <div class="nav-inner">
-    <div class="logo">여론<span>×</span>통계 탐구</div>
+    <div class="logo">여론<span>×</span>통계 도구</div>
     <nav class="nav-links">
+      <a href="#setup">탐구 설정</a>
       <a href="#data">데이터</a>
       <a href="#analysis">분석</a>
       <a href="#interpret">해석</a>
       <a href="#caveats">유의사항</a>
-      <a href="#sources">출처</a>
     </nav>
   </div>
 </header>
 
 <section class="hero">
-  <div class="badge">탐구 주제 · 선거·여론 데이터의 지역·세대별 회귀 분석</div>
-  <h1>특정 사회 이슈에 대한 찬반은<br>지역별 소득수준·연령대와 실제로 관계가 있을까?</h1>
+  <div class="badge">실용 도구 · 상관관계·회귀분석 자동 계산기</div>
+  <h1>내 데이터로 통념을 검증하는<br>상관관계·회귀분석 도구</h1>
   <div class="question-box">
-    <b>탐구 질문.</b> 특정 사회 이슈에 대한 찬반이 지역별 소득수준·연령대와 실제로 통계적 상관관계가 있는가,
-    아니면 흔히 생각하는 통념과 다른가? 공개된 여론조사 원자료와 지역 통계를 결합해
-    산점도와 회귀선으로 상관관계를 직접 검증해봅니다.
+    <b>사용법.</b> 아래 "탐구 설정"에 원하는 주제와 두 변수의 이름을 적고, "데이터" 표에 실제 수치를 입력하면
+    산점도·회귀선·상관계수가 자동으로 계산됩니다. 어떤 주제든 표만 바꿔서 재사용할 수 있습니다.
+  </div>
+</section>
+
+<section id="setup">
+  <div class="section-head">
+    <div class="eyebrow">Step 1</div>
+    <h2>탐구 설정</h2>
+    <p>탐구 주제와 두 변수의 이름, 그리고 분석 전에 예상하는 통념(가설)을 적어주세요.</p>
+  </div>
+  <div class="panel">
+    <div class="field-grid">
+      <div class="field full">
+        <label for="topicInput">탐구 주제 / 질문</label>
+        <input type="text" id="topicInput" value="지역별 소득수준과 여론 찬성률의 관계 (예시 데이터 - 직접 수정하세요)">
+      </div>
+      <div class="field">
+        <label for="xLabelInput">X축 변수명</label>
+        <input type="text" id="xLabelInput" value="지역별 1인당 개인소득(만원)">
+      </div>
+      <div class="field">
+        <label for="yLabelInput">Y축 변수명</label>
+        <input type="text" id="yLabelInput" value="이슈 찬성률(%)">
+      </div>
+      <div class="field full">
+        <label>분석 전 예상하는 통념(가설)의 방향</label>
+        <div class="radio-row">
+          <label><input type="radio" name="expected" value="positive"> X가 커지면 Y도 커질 것이다 (양의 상관)</label>
+          <label><input type="radio" name="expected" value="negative"> X가 커지면 Y는 작아질 것이다 (음의 상관)</label>
+          <label><input type="radio" name="expected" value="none" checked> 뚜렷한 관계가 없을 것이다</label>
+        </div>
+      </div>
+      <div class="field full">
+        <label for="wisdomInput">그렇게 예상하는 이유(통념의 근거)</label>
+        <textarea id="wisdomInput">소득 수준과는 뚜렷한 상관관계가 없을 것이라는 예상이 일반적입니다.</textarea>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="data">
   <div class="section-head">
-    <div class="eyebrow">Data</div>
-    <h2>사용한 실제 데이터</h2>
-    <p>가상의 예시 수치가 아니라, 실제 언론에 보도된 여론조사·통계청 지표를 결합해 구성했습니다.</p>
+    <div class="eyebrow">Step 2</div>
+    <h2>데이터 입력</h2>
+    <p>아래는 예시 데이터입니다. 행을 직접 수정하거나 삭제하고, 원하는 주제의 데이터로 바꿔 넣으세요.</p>
   </div>
-
-  <div class="notice" style="margin-bottom:20px;">
-    <h3>⚠ 데이터 구성 방식 안내 (꼭 읽어주세요)</h3>
-    <ul>
-      <li>여론 데이터는 <b>한국갤럽 데일리 오피니언(2026.7.14~16 조사)</b>의 "검찰 보완수사권 유지/폐지" 문항 결과를 언론 보도(문화일보·프레시안·디지털타임스)에서 인용했습니다. 갤럽은 표본 크기(약 1,000명) 특성상 지역을 <b>서울/인천·경기/강원·충청/대구·경북/부산·울산·경남/광주·전라의 6개 권역</b>으로만 발표합니다. 17개 시·도 단위의 공개된 찬반 교차표는 존재하지 않아, 6개 권역 기준으로 분석을 구성했습니다.</li>
-      <li>소득 데이터는 <b>통계청 「지역소득(잠정)」 2023년 1인당 개인소득</b>(뉴스핌 2024.12.20 보도 기준)이며, 6개 권역 값은 해당 권역에 속한 시·도의 <b>단순 평균</b>으로 자체 재구성한 값입니다(공식 통계가 아닌 이 페이지에서의 가공값).</li>
-      <li>여론조사는 2026년 7월, 소득 통계는 2023년 기준으로 <b>조사 시점이 다릅니다.</b> 지역소득은 통계 특성상 공표에 1~2년의 시차가 있어 가장 최근 공식 자료를 사용했습니다.</li>
-      <li>표본 수가 <b>6개(지역) / 6개(연령대)</b>로 매우 적어, 상관계수는 참고용이며 통계적 유의성을 엄밀히 검증한 것은 아닙니다.</li>
-    </ul>
-  </div>
-
-  <div class="issue-card">
-    <p class="issue-title">🔍 검찰 보완수사권, 현행대로 유지해야 하는가?</p>
-    <p class="issue-meta">한국갤럽 데일리 오피니언 · 2026.7.14~16 조사 · 전국 성인 1,000명 이상 · 무선전화면접(CATI)</p>
-    <div class="overall-row">
-      <div class="overall-stat"><div class="num pos">61%</div><div class="lbl">유지해야 한다</div></div>
-      <div class="overall-stat"><div class="num neg">23%</div><div class="lbl">폐지해야 한다</div></div>
-      <div class="overall-stat"><div class="num">16%</div><div class="lbl">모름·기타(추정)</div></div>
+  <div class="panel">
+    <table>
+      <thead>
+        <tr><th>항목명(라벨)</th><th>X값</th><th>Y값</th><th></th></tr>
+      </thead>
+      <tbody id="dataInputBody"></tbody>
+    </table>
+    <div class="table-actions">
+      <button class="btn btn-ghost" id="addRowBtn">+ 행 추가</button>
+      <button class="btn btn-ghost" id="clearRowsBtn">전체 지우기</button>
+      <button class="btn btn-primary" id="analyzeBtn">분석하기</button>
     </div>
   </div>
 </section>
 
 <section id="analysis">
   <div class="section-head">
-    <div class="eyebrow">Analysis</div>
+    <div class="eyebrow">Step 3</div>
     <h2>산점도 · 회귀선 · 상관계수</h2>
-    <p>x축 변수를 바꿔가며 "유지해야 한다" 응답 비율(y축, %)과의 관계를 확인해보세요.</p>
+    <p>입력한 데이터를 기준으로 자동 계산된 결과입니다.</p>
+  </div>
+
+  <div class="summary-banner">
+    <p class="sb-topic" id="topicDisplay">-</p>
+    <p class="sb-vars" id="varsDisplay">-</p>
   </div>
 
   <div class="panel">
-    <div class="controls">
-      <span class="ctrl-label">X축 변수</span>
-      <div class="toggle-group">
-        <button class="toggle-btn active" data-xvar="income">지역별 소득수준</button>
-        <button class="toggle-btn" data-xvar="age">연령대</button>
-      </div>
-    </div>
-
     <div class="chart-layout">
       <div class="chart-wrap">
         <canvas id="chart" width="640" height="420"></canvas>
@@ -371,21 +410,14 @@
         </div>
       </div>
     </div>
-
-    <table>
-      <thead>
-        <tr><th id="tableColLabel">구분</th><th id="tableColX">X값</th><th>유지 찬성률(%)</th></tr>
-      </thead>
-      <tbody id="dataTableBody"></tbody>
-    </table>
   </div>
 </section>
 
 <section id="interpret">
   <div class="section-head">
-    <div class="eyebrow">Interpretation</div>
+    <div class="eyebrow">Step 4</div>
     <h2>통념과 일치하는가?</h2>
-    <p>일반적으로 예상되는 통념과 실제 분석 결과를 비교합니다.</p>
+    <p>Step 1에서 적은 예상(통념)과 실제 분석 결과를 자동으로 비교합니다.</p>
   </div>
   <div class="interpret-box">
     <span class="verdict" id="verdictBadge">-</span>
@@ -412,97 +444,105 @@
   <div class="section-head">
     <div class="eyebrow">Limitations</div>
     <h2>해석 시 유의할 점</h2>
-    <p>통계 수치를 읽을 때 함께 고려해야 할 현실적인 한계입니다.</p>
+    <p>결과를 결론으로 쓰기 전에 함께 고려해야 할 현실적인 한계입니다.</p>
   </div>
   <div class="panel">
     <div class="caveat-list">
       <div class="caveat-item">
         <div class="caveat-num">1</div>
-        <p><b>상관관계 ≠ 인과관계</b>소득이나 연령이 찬반에 "영향을 준다"는 것을 증명하지 않습니다. 상관계수는 두 변수가 함께 움직이는 경향만 보여줍니다.</p>
+        <p><b>상관관계 ≠ 인과관계</b>X가 Y에 "영향을 준다"는 것을 증명하지 않습니다. 상관계수는 두 변수가 함께 움직이는 경향만 보여줍니다.</p>
       </div>
       <div class="caveat-item">
         <div class="caveat-num">2</div>
-        <p><b>실제 더 강한 변수는 정당 지지였습니다</b>같은 조사에서 지지 정당별 응답은 국민의힘 지지층 81% 대 8%, 민주당 지지층 46% 대 39%, 무당층 63% 대 12%로 지역·연령 차이보다 훨씬 크게 갈렸습니다(문화일보 보도). 지역·연령별 차이는 각 권역·세대의 정당 지지 성향 차이를 간접적으로 반영한 결과일 가능성이 큽니다.</p>
+        <p><b>제3의 변수(교란변수)를 의심하세요</b>겉으로 드러난 관계가 실제로는 다른 숨은 변수 때문일 수 있습니다. 다른 변수를 추가로 검토해보세요.</p>
       </div>
       <div class="caveat-item">
         <div class="caveat-num">3</div>
-        <p><b>생태학적 오류(ecological fallacy) 주의</b>권역 평균 소득과 권역 평균 찬성률의 관계이지, "소득이 높은 개인일수록 찬성한다"는 개인 수준의 관계를 의미하지 않습니다.</p>
+        <p><b>생태학적 오류(ecological fallacy) 주의</b>집단(지역·연령대 등) 평균 간의 관계가, 그 안의 개인 수준 관계와 반드시 같지는 않습니다.</p>
       </div>
       <div class="caveat-item">
         <div class="caveat-num">4</div>
-        <p><b>표본이 매우 작음</b>지역 6개, 연령대 6개라는 적은 점의 개수로 계산한 상관계수는 이상치 하나에도 크게 흔들릴 수 있어 참고 수준으로만 해석해야 합니다.</p>
+        <p><b>표본이 작을수록 주의</b>데이터 개수가 적을수록 상관계수는 이상치 하나에도 크게 흔들릴 수 있어 참고 수준으로만 해석해야 합니다.</p>
       </div>
       <div class="caveat-item">
         <div class="caveat-num">5</div>
-        <p><b>소득 데이터는 자체 가공값</b>6개 권역별 소득은 시·도 값을 단순 평균한 것으로, 인구 비중을 반영한 가중평균이 아닙니다.</p>
+        <p><b>데이터 출처를 함께 기록하세요</b>결론에 신뢰도를 더하려면 각 수치를 어디서 가져왔는지 별도로 메모해 두는 것이 좋습니다.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<section id="sources">
-  <div class="section-head">
-    <div class="eyebrow">Sources</div>
-    <h2>출처</h2>
-  </div>
-  <div class="panel source-list">
-    <div class="src-group">
-      <b>여론조사 데이터 (한국갤럽 데일리 오피니언, 2026.7.14~16)</b>
-      <a href="https://www.munhwa.com/article/11603271" target="_blank" rel="noopener">문화일보 - 보완수사권 유지 61%·폐지 23%…한동훈 복당 찬성 28%</a>
-      <a href="https://www.pressian.com/pages/articles/2026071711555814249" target="_blank" rel="noopener">프레시안 - '보완수사권 유지' 여론 60% 넘었다…광주전라서도 과반 넘어 (지역별 결과)</a>
-      <a href="https://www.dt.co.kr/article/12073433" target="_blank" rel="noopener">디지털타임스 - 보완수사권 폐지 찬성 36%, 반대 55%…40대·50대 엇갈려 (연령별 결과)</a>
-    </div>
-    <div class="src-group">
-      <b>지역 소득 데이터 (통계청 「지역소득(잠정)」 2023년 1인당 개인소득)</b>
-      <a href="https://www.newspim.com/news/view/20241220000183" target="_blank" rel="noopener">뉴스핌 - 1인당 개인소득 서울 2937만원 전국 1위…울산·대전·세종·경기 순</a>
-      <a href="https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C86" target="_blank" rel="noopener">KOSIS 국가통계포털 - 시도별 1인당 지역내총생산, 지역총소득, 개인소득</a>
     </div>
   </div>
 </section>
 
 <footer>
-  탐구 주제: 선거·여론 데이터의 지역·세대별 회귀 분석 · 데이터 기준일 2026-07-24
+  상관관계·회귀분석 도구 · 최종 수정 2026-07-24
 </footer>
 
 <script>
 (function () {
-  var REGION_INCOME = [
-    { label: '서울', x: 2937, approval: 60 },
-    { label: '인천·경기', x: 2518, approval: 61 },
-    { label: '강원·충청', x: 2388, approval: 59 },
-    { label: '대구·경북', x: 2334, approval: 65 },
-    { label: '부산·울산·경남', x: 2497, approval: 63 },
-    { label: '광주·전라', x: 2471, approval: 55 }
+  var defaultRows = [
+    { label: '서울', x: '2937', y: '60' },
+    { label: '인천·경기', x: '2518', y: '61' },
+    { label: '강원·충청', x: '2388', y: '59' },
+    { label: '대구·경북', x: '2334', y: '65' },
+    { label: '부산·울산·경남', x: '2497', y: '63' },
+    { label: '광주·전라', x: '2471', y: '55' }
   ];
 
-  var AGE_APPROVAL = [
-    { label: '20대', x: 25, approval: 66 },
-    { label: '30대', x: 35, approval: 70 },
-    { label: '40대', x: 45, approval: 62 },
-    { label: '50대', x: 55, approval: 46 },
-    { label: '60대', x: 65, approval: 64 },
-    { label: '70대 이상', x: 75, approval: 58 }
-  ];
+  var rows = defaultRows.map(function (r) { return { label: r.label, x: r.x, y: r.y }; });
 
-  var WISDOM = {
-    income: {
-      text: '검찰 보완수사권 사안은 소득 수준보다 정치 성향·지지 정당에 따라 갈릴 가능성이 높은 사안이라, 지역별 소득수준과는 뚜렷한 상관관계가 없을 것이라는 예상이 일반적입니다.',
-      expected: 'none'
-    },
-    age: {
-      text: '검찰 권한 확대에는 젊은 세대가 상대적으로 비판적이고, 고령층일수록 기존 제도 유지를 선호할 것이라는 통념이 있어 연령이 높을수록 찬성률이 높아지는 양(+)의 상관관계가 예상됩니다.',
-      expected: 'positive'
-    }
-  };
-
-  var xVarLabels = {
-    income: { axis: '지역별 1인당 개인소득 (만원, 2023년 기준)', col: '1인당 개인소득(만원)', colLabel: '권역' },
-    age: { axis: '연령대 (세, 대표값)', col: '대표 연령(세)', colLabel: '연령대' }
-  };
-
-  var currentXVar = 'income';
+  var tbody = document.getElementById('dataInputBody');
   var canvas = document.getElementById('chart');
   var ctx = canvas.getContext('2d');
+
+  function renderTable() {
+    tbody.innerHTML = '';
+    rows.forEach(function (row, idx) {
+      var tr = document.createElement('tr');
+
+      var tdLabel = document.createElement('td');
+      var inLabel = document.createElement('input');
+      inLabel.type = 'text'; inLabel.value = row.label;
+      inLabel.addEventListener('input', function () { rows[idx].label = inLabel.value; });
+      tdLabel.appendChild(inLabel);
+
+      var tdX = document.createElement('td');
+      var inX = document.createElement('input');
+      inX.type = 'text'; inX.value = row.x;
+      inX.addEventListener('input', function () { rows[idx].x = inX.value; });
+      tdX.appendChild(inX);
+
+      var tdY = document.createElement('td');
+      var inY = document.createElement('input');
+      inY.type = 'text'; inY.value = row.y;
+      inY.addEventListener('input', function () { rows[idx].y = inY.value; });
+      tdY.appendChild(inY);
+
+      var tdDel = document.createElement('td');
+      tdDel.className = 'del-cell';
+      var btnDel = document.createElement('button');
+      btnDel.className = 'btn-del';
+      btnDel.textContent = '✕';
+      btnDel.addEventListener('click', function () {
+        rows.splice(idx, 1);
+        renderTable();
+      });
+      tdDel.appendChild(btnDel);
+
+      tr.appendChild(tdLabel); tr.appendChild(tdX); tr.appendChild(tdY); tr.appendChild(tdDel);
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('addRowBtn').addEventListener('click', function () {
+    rows.push({ label: '', x: '', y: '' });
+    renderTable();
+  });
+
+  document.getElementById('clearRowsBtn').addEventListener('click', function () {
+    rows = [];
+    renderTable();
+  });
+
+  document.getElementById('analyzeBtn').addEventListener('click', analyze);
 
   function computeStats(xs, ys) {
     var n = xs.length;
@@ -513,8 +553,8 @@
       var dx = xs[i] - mx, dy = ys[i] - my;
       num += dx * dy; dx2 += dx * dx; dy2 += dy * dy;
     }
-    var r = num / Math.sqrt(dx2 * dy2);
-    var slope = num / dx2;
+    var r = (dx2 === 0 || dy2 === 0) ? 0 : num / Math.sqrt(dx2 * dy2);
+    var slope = dx2 === 0 ? 0 : num / dx2;
     var intercept = my - slope * mx;
     return { r: r, slope: slope, intercept: intercept, r2: r * r, n: n };
   }
@@ -536,11 +576,11 @@
     return { actualDir: actualDir, matches: matches, absR: absR };
   }
 
-  function drawChart(xs, ys, labels, stats, xAxisLabel) {
+  function drawChart(xs, ys, labels, stats, xAxisLabel, yAxisLabel) {
     var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
 
-    var pad = { left: 54, right: 24, top: 24, bottom: 56 };
+    var pad = { left: 58, right: 24, top: 24, bottom: 56 };
     var plotW = W - pad.left - pad.right;
     var plotH = H - pad.top - pad.bottom;
 
@@ -549,7 +589,10 @@
     var xPadAmt = xRange * 0.15;
     var xDomMin = xMin - xPadAmt, xDomMax = xMax + xPadAmt;
 
-    var yDomMin = 0, yDomMax = 100;
+    var yMin = Math.min.apply(null, ys), yMax = Math.max.apply(null, ys);
+    var yRange = yMax - yMin || 1;
+    var yPadAmt = yRange * 0.15;
+    var yDomMin = yMin - yPadAmt, yDomMax = yMax + yPadAmt;
 
     function toPx(x, y) {
       var px = pad.left + ((x - xDomMin) / (xDomMax - xDomMin)) * plotW;
@@ -562,7 +605,9 @@
     ctx.font = '11px sans-serif';
     ctx.lineWidth = 1;
 
-    for (var gy = 0; gy <= 100; gy += 20) {
+    var yTickCount = 5;
+    for (var g = 0; g <= yTickCount; g++) {
+      var gy = yDomMin + (yDomMax - yDomMin) * (g / yTickCount);
       var p0 = toPx(xDomMin, gy);
       var p1 = toPx(xDomMax, gy);
       ctx.beginPath();
@@ -571,23 +616,23 @@
       ctx.stroke();
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
-      ctx.fillText(gy + '%', pad.left - 8, p0[1]);
+      ctx.fillText(Math.round(gy * 100) / 100, pad.left - 8, p0[1]);
     }
 
     var xTickCount = 5;
     for (var i = 0; i <= xTickCount; i++) {
       var xv = xDomMin + (xDomMax - xDomMin) * (i / xTickCount);
-      var pt = toPx(xv, 0);
+      var pt = toPx(xv, yDomMin);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      ctx.fillText(Math.round(xv), pt[0], pad.top + plotH + 8);
+      ctx.fillText(Math.round(xv * 100) / 100, pt[0], pad.top + plotH + 8);
     }
 
     ctx.strokeStyle = '#1a1d29';
     ctx.beginPath();
-    var ax0 = toPx(xDomMin, 0), ax1 = toPx(xDomMax, 0);
+    var ax0 = toPx(xDomMin, yDomMin), ax1 = toPx(xDomMax, yDomMin);
     ctx.moveTo(ax0[0], ax0[1]); ctx.lineTo(ax1[0], ax1[1]);
-    var ay0 = toPx(xDomMin, 0), ay1 = toPx(xDomMin, 100);
+    var ay0 = toPx(xDomMin, yDomMin), ay1 = toPx(xDomMin, yDomMax);
     ctx.moveTo(ay0[0], ay0[1]); ctx.lineTo(ay1[0], ay1[1]);
     ctx.stroke();
 
@@ -596,9 +641,9 @@
     ctx.textAlign = 'center';
     ctx.fillText(xAxisLabel, pad.left + plotW / 2, H - 14);
     ctx.save();
-    ctx.translate(14, pad.top + plotH / 2);
+    ctx.translate(16, pad.top + plotH / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('유지 찬성률 (%)', 0, 0);
+    ctx.fillText(yAxisLabel, 0, 0);
     ctx.restore();
 
     var lineStart = toPx(xDomMin, stats.slope * xDomMin + stats.intercept);
@@ -628,58 +673,65 @@
     }
   }
 
-  function render() {
-    var dataset = currentXVar === 'income' ? REGION_INCOME : AGE_APPROVAL;
-    var xs = dataset.map(function (d) { return d.x; });
-    var ys = dataset.map(function (d) { return d.approval; });
-    var labels = dataset.map(function (d) { return d.label; });
-    var stats = computeStats(xs, ys);
-    var meta = xVarLabels[currentXVar];
+  function analyze() {
+    var valid = rows.filter(function (r) {
+      return r.label.trim() !== '' && r.x.trim() !== '' && r.y.trim() !== '' &&
+        !isNaN(parseFloat(r.x)) && !isNaN(parseFloat(r.y));
+    });
 
-    drawChart(xs, ys, labels, stats, meta.axis);
+    var topic = document.getElementById('topicInput').value.trim() || '(탐구 주제를 입력하세요)';
+    var xLabel = document.getElementById('xLabelInput').value.trim() || 'X 변수';
+    var yLabel = document.getElementById('yLabelInput').value.trim() || 'Y 변수';
+    var expected = document.querySelector('input[name="expected"]:checked').value;
+    var wisdomTextVal = document.getElementById('wisdomInput').value.trim();
+
+    document.getElementById('topicDisplay').textContent = topic;
+    document.getElementById('varsDisplay').textContent = 'X축: ' + xLabel + '  ·  Y축: ' + yLabel;
+
+    if (valid.length < 2) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      document.getElementById('statR').textContent = '-';
+      document.getElementById('statStrength').textContent = '데이터 2개 이상을 입력하세요';
+      document.getElementById('statR2').textContent = '-';
+      document.getElementById('statEq').textContent = '-';
+      document.getElementById('statN').textContent = '';
+      document.getElementById('verdictBadge').textContent = '데이터 부족';
+      document.getElementById('verdictBadge').className = 'verdict';
+      document.getElementById('wisdomText').textContent = '';
+      document.getElementById('interpretText').textContent = '유효한 숫자 데이터를 2행 이상 입력하면 결과가 표시됩니다.';
+      return;
+    }
+
+    var xs = valid.map(function (r) { return parseFloat(r.x); });
+    var ys = valid.map(function (r) { return parseFloat(r.y); });
+    var labels = valid.map(function (r) { return r.label; });
+
+    var stats = computeStats(xs, ys);
+    drawChart(xs, ys, labels, stats, xLabel, yLabel);
 
     document.getElementById('statR').textContent = stats.r.toFixed(3);
     document.getElementById('statStrength').textContent = strengthLabel(Math.abs(stats.r)) + ' ' + (Math.abs(stats.r) < 0.2 ? '관계' : (stats.r > 0 ? '양(+)의 상관' : '음(-)의 상관'));
     document.getElementById('statR2').textContent = stats.r2.toFixed(3);
-    document.getElementById('statEq').textContent = 'ŷ = ' + stats.slope.toFixed(4) + 'x + ' + stats.intercept.toFixed(1);
+    document.getElementById('statEq').textContent = 'ŷ = ' + stats.slope.toFixed(4) + 'x + ' + stats.intercept.toFixed(2);
     document.getElementById('statN').textContent = 'n = ' + stats.n + '개 지점';
 
-    document.getElementById('tableColLabel').textContent = meta.colLabel;
-    document.getElementById('tableColX').textContent = meta.col;
-    var tbody = document.getElementById('dataTableBody');
-    tbody.innerHTML = '';
-    dataset.forEach(function (d) {
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + d.label + '</td><td class="num-cell">' + d.x.toLocaleString() + '</td><td class="num-cell">' + d.approval + '%</td>';
-      tbody.appendChild(tr);
-    });
-
-    var wisdom = WISDOM[currentXVar];
-    var evalResult = evaluateMatch(stats.r, wisdom.expected);
+    var evalResult = evaluateMatch(stats.r, expected);
     var badge = document.getElementById('verdictBadge');
     badge.textContent = evalResult.matches ? '✅ 통념과 대체로 일치' : '❌ 통념과 다른 결과';
     badge.className = 'verdict ' + (evalResult.matches ? 'match' : 'mismatch');
 
-    document.getElementById('wisdomText').textContent = '일반적인 통념: ' + wisdom.text;
+    document.getElementById('wisdomText').textContent = wisdomTextVal ? ('예상한 통념: ' + wisdomTextVal) : '';
 
     var dirText = evalResult.actualDir === 'none' ? '뚜렷한 상관관계가 나타나지 않았습니다' : (evalResult.actualDir === 'positive' ? '양(+)의 상관관계가 나타났습니다' : '음(-)의 상관관계가 나타났습니다');
     document.getElementById('interpretText').textContent =
       '실제 데이터에서는 r = ' + stats.r.toFixed(2) + ' (R² = ' + stats.r2.toFixed(2) + ')로, ' + dirText + '. ' +
       (evalResult.matches
-        ? '이는 위 통념과 대체로 일치하는 결과입니다.'
-        : '이는 위 통념과는 다소 다른 결과로, 실제 데이터가 통념만으로는 설명되지 않는 패턴을 보여줍니다.');
+        ? '이는 처음 예상했던 통념과 대체로 일치하는 결과입니다.'
+        : '이는 처음 예상했던 통념과는 다소 다른 결과로, 실제 데이터가 통념만으로는 설명되지 않는 패턴을 보여줍니다.');
   }
 
-  document.querySelectorAll('.toggle-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      document.querySelectorAll('.toggle-btn').forEach(function (b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      currentXVar = btn.getAttribute('data-xvar');
-      render();
-    });
-  });
-
-  render();
+  renderTable();
+  analyze();
 })();
 </script>
 
